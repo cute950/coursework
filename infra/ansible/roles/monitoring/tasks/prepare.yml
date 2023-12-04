@@ -1,0 +1,42 @@
+- name: Create BACK_NET network for app
+  docker_network:
+    name: BACK_NET
+    ipam_driver_options:
+      subnet: '10.0.1.0/24'
+- name: Create FRONT_NET network for app
+  docker_network:
+    name: FRONT_NET
+    ipam_driver_options:
+      subnet: '10.0.2.0/24'
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - /srv/prometheus/config
+    - /srv/monitoring
+    - /srv/grafana/
+    - /srv/grafana/provisioning/datasources
+    - /srv/grafana/provisioning/dashboards
+    - /srv/grafana/dashboards
+- name: Set prometheus config file
+  template:
+    src: ../templates/prometheus.yml.j2
+    dest: /srv/prometheus/config/prometheus.yml
+  register: prometheus_config
+- name: Set grafana config file
+  template:
+    src: ../templates/grafana.ini.j2
+    dest: /srv/grafana/grafana.ini
+- name: Set grafana default datasource
+  template:
+    src: ../templates/grafana-prov-datasources-all.yml.j2
+    dest: /srv/grafana/provisioning/datasources/all.yml
+- name: Set grafana default dashboards
+  template:
+    src: ../templates/grafana-prov-dashboard-default.yml.j2
+    dest: /srv/grafana/provisioning/dashboards/default.yml
+- name: Create grafana node exporter dashboard
+  get_url:
+    url: https://grafana.com/api/dashboards/1860/revisions/27/download
+    dest: /srv/grafana/dashboards/grafana-node-exporter-full.json

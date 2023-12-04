@@ -1,0 +1,19 @@
+[gitlab_hosts]
+%{ for ip in instance_gitlab_ip ~}
+gitlab-host ansible_host=${ip}
+%{ endfor ~}
+
+[monitoring_hosts]
+%{ for ip in instance_monitoring_ip ~}
+monitoring-host ansible_host=${ip}
+%{ endfor ~}
+
+
+[infra_hosts]
+%{ for ip in instance_gitlab_ip ~}
+gitlab-host ansible_host=${ip}
+%{ endfor ~}
+
+%{ for ip in instance_monitoring_ip ~}
+monitoring-host ansible_host=${ip}
+%{ endfor ~}

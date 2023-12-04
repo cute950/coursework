@@ -1,0 +1,76 @@
+version: '3.3'
+services:
+  mongodb:
+    image: mongo:3.2
+    volumes:
+      - app_mongo_db:/data/db
+    networks:
+      BACK_NET:
+        aliases:
+          - crawler_db
+          - ui_db
+  rabbitmq:
+    image: rabbitmq:3.9.21-alpine
+    volumes:
+      - rabbit-vol:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASS}
+    networks:
+      BACK_NET:
+        aliases:
+          - rabbitmq
+  ui:
+    image: search_engine_ui_image:1.0
+    build:
+      context: ./search_engine_ui
+    environment:
+      - MONGO=mongodb
+      - MONGO_PORT=27017
+    ports:
+      - 80:8000
+    networks:
+      BACK_NET:
+        aliases:
+           - ui
+      FRONT_NET:
+    depends_on:
+      - mongodb
+
+  crawler:
+    image: search_engine_crawler_image:1.0
+    build:
+      context: ./search_engine_crawler
+    environment:
+      - MONGO=mongodb
+      - MONGO_PORT=27017
+      - RMQ_HOST=rabbitmq
+      - RMQ_QUEUE=queue
+      - RMQ_USERNAME=${RABBITMQ_USER}
+      - RMQ_PASSWORD=${RABBITMQ_PASS}
+      - EXCLUDE_URLS=${EXCLUDE_URLS}
+      - URL=${URL}
+    ports:
+      - 8001:8000
+    restart: on-failure
+    depends_on:
+      - mongodb
+      - rabbitmq
+    networks:
+      BACK_NET:
+        aliases:
+          - crawler
+      FRONT_NET:
+volumes:
+  app_mongo_db:
+  rabbit-vol:
+
+networks:
+  BACK_NET:
+    ipam:
+      config:
+        - subnet: ${BACKNET_SUBNET_PREF}
+  FRONT_NET:
+    ipam:
+      config:
+        - subnet: ${FRONTNET_SUBNET_PREF}

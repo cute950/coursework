@@ -1,0 +1,22 @@
+tf_state: present
+tf_bucket_zone: ru-central1-a
+tf_bucket_name: search-engine-crawler-state
+tf_bucket_state_file_name: search-engine-crawler.tfstate
+tf_bucket_access_key: tf_bucket_access_key
+tf_bucket_secret_key: tf_bucket_secret_key
+
+docker_install_compose: true
+
+prometheus_jobs_create: |
+  - targets:
+    - "{{ hostvars['app-host'].ansible_host }}:9100"
+    labels:
+      instance: "app_node_exporter"
+  - targets:
+    - "{{ hostvars['app-host'].ansible_host }}:80"
+    labels:
+      instance: "app-ui"
+  - targets:
+    - "{{ hostvars['app-host'].ansible_host }}:8001"
+    labels:
+      instance: "app-crawler"

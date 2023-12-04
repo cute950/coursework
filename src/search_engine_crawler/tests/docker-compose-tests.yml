@@ -1,0 +1,6 @@
+version: '3.3'
+services:
+  crawler:
+    volumes:
+      - '/builds/root/coursework/src/search_engine_crawler/tests:/tests'
+      - '/builds/root/coursework/src/search_engine_crawler/requirements-test.txt:/crawler/requirements-test.txt'

@@ -1,0 +1,6 @@
+version: '3.3'
+services:
+  ui:
+    volumes:
+      - '/builds/root/coursework/src/search_engine_ui/tests:/tests'
+      - '/builds/root/coursework/src/search_engine_ui/requirements-test.txt:/ui/requirements-test.txt'

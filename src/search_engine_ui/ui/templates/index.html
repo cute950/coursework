@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="color-scheme" content="light">
+        <link rel="stylesheet" href="/static/css/index.css"/>
+        <title>Поиск</title>
+    </head>
+    <body>
+        <header>
+            <nav class="navigation">
+                <a href="/">Главная</a>
+                <a href="/">Что почитать</a>
+                <a href="/">Жанры</a>
+                <a href="/">Авторы</a>
+            </nav>
+            <div class="search">
+                <form action="/" method="get" class="search__form">
+                    <input type="text" name="query" size="80" value="{{request.args.get('query', '')}}" class="search__field" placeholder="Поиск">
+                    <button class="search__button">🔎</button>
+                </form>
+            </div>
+        </header>
+        <main>
+            <h1>Результаты поиска</h1>
+            {% if result %}
+                <div class="results">
+                    {% for url in result %}
+                        <div class="results__item">Score {{url[0]}}: <a href="{{url[1]}}">{{url[1]}}</a></div>
+                    {% endfor %}
+                </div>
+            {% elif request.args.get('query', '') %}
+                <p>По вашему запросу ничего не найдено</p>
+            {% endif %}
+        </main>
+        <footer class="footer">
+            <div>
+                Время сборки: {{ "%.5fs" % gen_time }}
+            </div>
+        </footer>
+    </body>
+</html>

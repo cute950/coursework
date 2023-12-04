@@ -1,0 +1,17 @@
+- name: Copy app sources on remote host
+  ansible.builtin.copy:
+    src: ../../../../src/
+    dest: /src/app
+    remote_src: false
+
+- name: Create dir for app and compose file
+  file:
+    path: '{{ item }}'
+    state: file
+    mode: '0644'
+  with_items:
+    - /src/app/docker-compose.yml
+
+- name: Deploy app images with docker-compose
+  docker_compose:
+    project_src: /src/app

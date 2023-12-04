@@ -1,0 +1,52 @@
+- name: Create YC infra
+  hosts: localhost
+  gather_facts: false
+  tasks:
+    - name: Create VMs for app, testing, monitoring
+      terraform:
+        force_init: true
+        project_path: ../../terraform
+        state: "{{ tf_state }}"
+        backend_config:
+          endpoint  : "storage.yandexcloud.net"
+          bucket    : "{{ tf_bucket_name }}"
+          region    : "{{ tf_bucket_zone }}"
+          key       : "{{ tf_bucket_state_file_name }}"
+          access_key: "{{ tf_bucket_access_key }}"
+          secret_key: "{{ tf_bucket_secret_key }}"
+          skip_region_validation     : "true"
+          skip_credentials_validation: "true"
+    - meta: refresh_inventory
+- name: Add packages to hosts
+  hosts: infra_hosts
+  become: true
+  remote_user: tkazymova
+  pre_tasks:
+    - name: Wait connection
+      wait_for_connection:
+        timeout: 400
+    - name: Gather facts
+      setup:
+    - name: Update apt
+      raw: sudo apt-get -y update
+    - name: Install Python3
+      raw: sudo apt-get -y install python3
+    - name: Install pip
+      apt:
+        name: pip
+        update_cache: true
+    - name: Install python modules docker and docker-compose
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+- name: Deploy gitlab-ci
+  hosts: gitlab_hosts
+  become: true
+  roles:
+    - role: gitlab-ci
+- name: Deploy Monitoring Stack
+  hosts: monitoring_hosts
+  become: true
+  roles:
+    - role: monitoring

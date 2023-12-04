@@ -1,0 +1,28 @@
+- name: Deploy prometheus docker image
+  docker_container:
+    container_default_behavior: compatibility
+    name: prometheus
+    image: prom/prometheus:v2.37.0
+    state: started
+    restart_policy: always
+    ports:
+      - '9090:9090'
+    volumes:
+      - prometheus_data:/prometheus
+      - '/srv/prometheus/config:/etc/prometheus/'
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=1d'
+      - '--web.enable-lifecycle'
+    networks:
+      - name: FRONT_NET
+        aliases:
+          - FRONT_NET
+      - name: BACK_NET
+        aliases:
+          - BACK_NET
+    purge_networks: true
+
+
+  

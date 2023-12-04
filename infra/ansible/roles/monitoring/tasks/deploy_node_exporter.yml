@@ -1,0 +1,23 @@
+- name: Deploy node-exporter docker image
+  docker_container:
+    container_default_behavior: compatibility
+    name: node-exporter
+    image: prom/node-exporter:v1.4.0-rc.0
+    user: root
+    state: started
+    restart_policy: always
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    ports:
+      - 9100:9100
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.ignored-mount-points="^/(sys|proc|dev|host|etc)($$|/)"'
+    networks:
+      - name: BACK_NET
+        aliases:
+          - BACK_NET
+    purge_networks: true

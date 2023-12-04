@@ -1,0 +1,8 @@
+#cloud-config
+users:
+  - name: tkazymova
+    groups: sudo
+    shell: /bin/bash
+    sudo: 'ALL=(ALL) NOPASSWD:ALL'
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDgKqUV2qk6ItgeJtwSEG+dySS9guDPo5EZbqWhNndXKXD+1biaqV3XcIEhmJlMYx2ksQcJtPxFaf8gkXy65p88UgzQw3wxRCBdQCtlxjMBRNGgrx1amQmj5S8cZAC2jQOH+9wXp7t5JYdhz0Fdy7XD3Y2Wd0a= tkazymova

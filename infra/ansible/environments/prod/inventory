@@ -1,0 +1,11 @@
+[gitlab_hosts]
+gitlab-host ansible_host=158.160.69.7
+
+[monitoring_hosts]
+monitoring-host ansible_host=158.160.64.66
+
+
+[infra_hosts]
+gitlab-host ansible_host=158.160.69.7
+
+monitoring-host ansible_host=158.160.64.66

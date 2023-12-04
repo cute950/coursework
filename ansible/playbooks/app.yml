@@ -1,0 +1,32 @@
+- name: Deploy Crawler application on YC
+  hosts: app_hosts
+  become: true
+  remote_user: tkazymova
+  pre_tasks:
+    - name: Wait connection
+      wait_for_connection:
+        timeout: 180
+    - name: Gather facts
+      setup:
+    - name: Update apt
+      raw: sudo apt-get -y update
+    - name: Install Python3
+      raw: sudo apt-get -y install python3
+    - name: Install pip
+      apt:
+        name: pip
+        update_cache: true
+    - name: Install python modules docker and docker-compose
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+  roles:
+    - app
+
+- name: Configure monitoring
+  hosts: monitoring_hosts
+  become: true
+  tasks:
+    - name: Check and modify monitoring configuration
+      include_tasks: monitoring_config.yml

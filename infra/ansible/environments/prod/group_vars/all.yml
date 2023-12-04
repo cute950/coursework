@@ -1,0 +1,10 @@
+tf_state: present
+tf_bucket_zone: ru-central1-a
+tf_bucket_name: search-engine-crawler-state
+tf_bucket_state_file_name: search-engine-crawler.tfstate
+tf_bucket_access_key: tf_bucket_access_key
+tf_bucket_secret_key: tf_bucket_secret_key
+gitlab_runner_token: gitlab_runner_token # GitLab token for runner register, SET YOURS if needed
+gitlab_root_password:  gitlab_root_password # GitLab password for user root (instance admin), SET YOURS
+
+docker_install_compose: true
